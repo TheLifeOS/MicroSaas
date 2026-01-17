@@ -52,6 +52,7 @@ export default function ResumeATSOptimizer() {
     // Simulate file reading
     const reader = new FileReader();
     reader.onload = async (event) => {
+      if (!event.target || typeof event.target.result !== 'string') return;
       const text = event.target.result;
       setResumeText(text);
       
