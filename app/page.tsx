@@ -180,7 +180,7 @@ export default function ResumeATSOptimizer() {
     // Generate actionable improvements
     const improvements: Improvement[] = [
       {
-        type: 'critical',
+        type: 'critical' as const,
         title: 'Quantify Your Achievements',
         category: 'Impact',
         current: 'Led team projects and improved system performance',
@@ -189,7 +189,7 @@ export default function ResumeATSOptimizer() {
         priority: 1
       },
       {
-        type: 'critical',
+        type: 'critical' as const,
         title: 'Optimize Keyword Density',
         category: 'ATS',
         current: `${foundKeywords.length} tech keywords detected`,
@@ -198,7 +198,7 @@ export default function ResumeATSOptimizer() {
         priority: 2
       },
       {
-        type: 'warning',
+        type: 'warning' as const,
         title: 'Strengthen Action Verbs',
         category: 'Writing',
         current: 'Responsible for developing and maintaining features',
@@ -207,7 +207,7 @@ export default function ResumeATSOptimizer() {
         priority: 3
       },
       {
-        type: 'warning',
+        type: 'warning' as const,
         title: 'Add Technical Metrics',
         category: 'Impact',
         current: 'Worked on database optimization',
@@ -216,7 +216,7 @@ export default function ResumeATSOptimizer() {
         priority: 2
       },
       {
-        type: 'info',
+        type: 'info' as const,
         title: 'Include Stack Details',
         category: 'Skills',
         current: 'Built web applications',
