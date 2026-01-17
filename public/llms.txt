@@ -1,0 +1,18 @@
+# ATS.PRO
+
+> High-performance, privacy-first ATS resume scanner for 2026 recruitment cycles.
+
+## Core Capabilities
+- **Neural Matching**: Simulates FAANG-level ATS scoring algorithms.
+- **Privacy-First**: All processing happens in the browser; no resume data is uploaded to servers.
+- **Market Benchmarking**: Provides instant feedback on "Market Value" based on keyword density.
+
+## Key Links
+- [Scanner](https://yourdomain.com/): The main neural scan interface.
+- [FAQ](https://yourdomain.com/#faq): Technical details on how the 2026 algorithms work.
+- [Privacy Policy](https://yourdomain.com/privacy): Details on the local-only data processing.
+
+## Technical Specifications
+- Built on: Next.js 16.0.7
+- Processing Engine: Neural weights version 2026.1
+- Dependencies: React 19, Lucide, Tailwind CSS
