@@ -1,160 +1,160 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Shield, Zap, Target, Cpu, CheckCircle2, 
   ArrowRight, Globe, Lock, DollarSign, TrendingUp, Sparkles,
-  Share2, Linkedin, BrainCircuit
+  Share2, Linkedin, BrainCircuit, Fingerprint, Activity, Terminal
 } from 'lucide-react';
 import { runNeuralScan } from '@/lib/engine';
 
-export default function EliteATSEngine() {
+export default function NeuralAuditor2126() {
   const [text, setText] = useState('');
   const [report, setReport] = useState<any>(null);
-  const [showComparison, setShowComparison] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
 
+  // 2126 Salary Algorythm (Adjusted for 100-year inflation/market shift)
   const salaryEstimate = useMemo(() => {
     if (!report || report.score < 85) return null;
-    const total = 145000 + ((report.score - 85) * 5000);
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total);
+    const value = 285000 + ((report.score - 85) * 12000);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
   }, [report]);
 
-  const shareToLinkedIn = () => {
-    const url = encodeURIComponent(window.location.origin);
-    const title = encodeURIComponent(`I just scored ${report?.score}% on the ATS.PRO Neural Audit!`);
-    const summary = encodeURIComponent("Verified 2026 Resume Benchmarking.");
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-  };
+  // Simulate Neural Synthesis
+  useEffect(() => {
+    if (text.length > 100) {
+      setIsScanning(true);
+      const timer = setTimeout(() => {
+        setReport(runNeuralScan(text));
+        setIsScanning(false);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [text]);
 
   return (
-    <div className="min-h-screen bg-[#050505]">
+    <div className="min-h-screen bg-[#020202] text-[#e5e5e5] font-mono selection:bg-purple-900/50 overflow-x-hidden">
       
-      {/* 1. COMPACT PREMIUM HEADER */}
-      <header className="pt-20 pb-10 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-7xl md:text-[10rem] font-black tracking-tighter bg-gradient-to-b from-white to-white/20 bg-clip-text text-transparent leading-[0.8] italic uppercase mb-4">
-            ATS<span className="text-purple-600 not-italic">.PRO</span>
+      {/* 2126 TOP NAV: HUD STYLE */}
+      <nav className="fixed top-0 w-full z-50 p-6 flex justify-between items-start pointer-events-none">
+        <div className="pointer-events-auto">
+          <h1 className="text-2xl font-black italic tracking-tighter uppercase leading-none group cursor-none">
+            ATS<span className="text-purple-600">.PRO</span>
+            <span className="block text-[8px] tracking-[0.8em] font-normal opacity-40 group-hover:opacity-100 transition-opacity">NEURAL_OS_v9.0</span>
           </h1>
-          <p className="text-[10px] font-black tracking-[0.6em] text-slate-600 uppercase">
-            Crafted by the Intelligence Team • v2026.1
-          </p>
         </div>
-      </header>
+        <div className="pointer-events-auto flex flex-col items-end gap-2">
+          <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-3xl">
+            <Activity className="w-3 h-3 text-purple-500 animate-[pulse_1s_ease-in-out_infinite]" />
+            <span className="text-[9px] font-bold tracking-widest uppercase text-purple-400">System Stable</span>
+          </div>
+          <p className="text-[8px] text-slate-600 uppercase tracking-tighter italic">Last_Sync: 2126-01-17_21:26</p>
+        </div>
+      </nav>
 
-      {/* 2. ENGINE INTERFACE */}
-      <main className="max-w-7xl mx-auto px-6 py-10 grid lg:grid-cols-12 gap-10">
+      {/* BACKGROUND KINETIC GRID */}
+      <div className="fixed inset-0 z-0 opacity-20 pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(#1a1a1a 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+      <main className="relative z-10 pt-40 px-6 max-w-[1600px] mx-auto grid lg:grid-cols-12 gap-12 pb-32">
         
-        {/* Input: Clean, No unnecessary border-glows */}
-        <div className="lg:col-span-7 bg-[#0A0A0A] rounded-[2rem] border border-white/5 flex flex-col overflow-hidden">
-          <textarea 
-            className="w-full h-[600px] bg-transparent border-none focus:ring-0 text-xl p-10 placeholder:text-slate-900 resize-none font-light leading-snug scrollbar-hide"
-            placeholder="Paste your professional story..."
-            onChange={(e) => {
-              setText(e.target.value);
-              if (e.target.value.length > 100) setReport(runNeuralScan(e.target.value));
-            }}
-          />
-          <div className="p-6 bg-white/[0.02] border-t border-white/5 flex justify-between items-center">
-             <div className="flex gap-4">
-                <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-500 uppercase"><Lock className="w-3 h-3 text-purple-600" /> Private</div>
-                <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-500 uppercase"><Cpu className="w-3 h-3 text-purple-600" /> Neural</div>
+        {/* LEFT: THE NEURAL FEED (INPUT) */}
+        <div className="lg:col-span-8 space-y-8">
+          <div className="relative group">
+            {/* Corner Accents */}
+            <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-purple-500/50 group-hover:border-purple-500 transition-all" />
+            <div className="absolute -bottom-2 -right-2 w-4 h-4 border-b-2 border-r-2 border-purple-500/50 group-hover:border-purple-500 transition-all" />
+            
+            <div className="bg-white/[0.02] border border-white/5 p-1 transition-all group-focus-within:border-purple-500/30">
+              <textarea 
+                className="w-full h-[65vh] bg-[#050505] p-12 text-2xl font-light tracking-tight focus:ring-0 border-none resize-none placeholder:text-slate-900 scrollbar-hide leading-relaxed"
+                placeholder="// FEED_NEURAL_DATA_HERE..."
+                spellCheck="false"
+                onChange={(e) => setText(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center text-[10px] font-bold tracking-[0.4em] text-slate-600 uppercase">
+             <div className="flex gap-8">
+                <span className="flex items-center gap-2 hover:text-purple-500 transition-colors cursor-help"><Fingerprint className="w-3 h-3" /> Bio-Signature_Locked</span>
+                <span className="flex items-center gap-2"><Terminal className="w-3 h-3" /> End_to_End_Client_Encryption</span>
              </div>
-             <div className="text-[9px] font-black text-slate-700 uppercase tracking-widest italic">{text.length} chars</div>
+             <div className="italic">Length: {text.length}</div>
           </div>
         </div>
 
-        {/* Output Panel */}
-        <div className="lg:col-span-5 space-y-4">
+        {/* RIGHT: THE INTELLIGENCE HUB (OUTPUT) */}
+        <div className="lg:col-span-4 sticky top-40 h-fit space-y-6">
           {!report ? (
-            <div className="h-full min-h-[400px] rounded-[2rem] border border-dashed border-white/5 flex flex-col items-center justify-center text-slate-800">
-              <BrainCircuit className="w-10 h-10 mb-4 opacity-20" />
-              <p className="text-[10px] font-black uppercase tracking-[0.4em]">Awaiting Input</p>
+            <div className="h-[400px] border border-white/5 flex flex-col items-center justify-center space-y-4">
+              <div className="w-12 h-12 border-2 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
+              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-800 italic">Listening_to_Frequency</p>
             </div>
           ) : (
-            <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
+            <div className="space-y-6 animate-in slide-in-from-bottom-10 fade-in duration-1000">
               
-              {/* Score Display */}
-              <div className="bg-white text-black p-10 rounded-[2rem] flex justify-between items-end relative overflow-hidden">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 italic">Neural Match</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-8xl font-black italic tracking-tighter">{report.score}</span>
-                    <span className="text-xl font-black opacity-30">%</span>
+              {/* SCORE NODE */}
+              <div className="bg-purple-600 p-12 relative overflow-hidden group">
+                <div className="relative z-10">
+                  <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-white/60 mb-8 italic">Synthesized_Match_Index</h3>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-[10rem] font-black italic tracking-tighter leading-none">{report.score}</span>
+                    <span className="text-2xl font-black opacity-40 italic">/100</span>
                   </div>
                 </div>
-                <button 
-                  onClick={shareToLinkedIn}
-                  className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-purple-600 transition-all shadow-xl active:scale-95"
-                >
-                  <Linkedin className="w-3 h-3" /> Share Result
-                </button>
-                <Sparkles className="absolute top-6 right-6 w-6 h-6 text-purple-600 animate-pulse" />
+                {/* Visual Glitch Decor */}
+                <div className="absolute top-0 right-0 w-32 h-full bg-white/5 -skew-x-12 translate-x-16 group-hover:translate-x-0 transition-transform duration-700" />
               </div>
 
-              {/* Salary Estimator (Human Editorial Style) */}
+              {/* MARKET VALUE (Dynamic appearance) */}
               {report.score >= 85 && (
-                <div className="bg-purple-600 p-10 rounded-[2rem] text-white">
-                  <div className="flex justify-between items-center mb-6">
-                    <TrendingUp className="w-6 h-6" />
-                    <span className="text-[9px] font-black border border-white/30 px-3 py-1 rounded-full uppercase italic">Market Authority 2026</span>
+                <div className="bg-white text-black p-10 flex flex-col justify-between">
+                  <div className="flex justify-between items-start mb-12">
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] italic">Market_Weight_2126</span>
+                    <TrendingUp className="w-5 h-5" />
                   </div>
-                  <h3 className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-70">Estimated Comp</h3>
                   <p className="text-6xl font-black italic tracking-tighter leading-none mb-4">{salaryEstimate}</p>
-                  <p className="text-[10px] font-medium leading-relaxed italic opacity-80">
-                    Your profile matches the high-density requirements for Tier-1 Senior Architecture roles.
+                  <p className="text-[9px] font-bold uppercase tracking-widest leading-relaxed">
+                    Based on local cluster analysis, your professional density exceeds {report.score}% of global nodes.
                   </p>
                 </div>
               )}
 
-              {/* Comparison Switcher */}
-              <div className="bg-[#111] p-8 rounded-[2rem] border border-white/5">
-                <div className="flex justify-between items-center mb-6">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 italic">Audit Comparison</h4>
-                  <div className="flex bg-black p-1 rounded-full border border-white/5">
-                    <button onClick={() => setShowComparison(false)} className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest transition-all ${!showComparison ? 'bg-white text-black' : 'text-slate-600'}`}>Core</button>
-                    <button onClick={() => setShowComparison(true)} className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest transition-all ${showComparison ? 'bg-purple-600 text-white' : 'text-slate-600'}`}>Comparison</button>
-                  </div>
+              {/* SEMANTIC GAP MODULE */}
+              <div className="p-8 border border-white/5 bg-white/[0.01]">
+                <h4 className="text-[9px] font-black uppercase tracking-[0.5em] text-slate-600 mb-8 italic flex items-center gap-2">
+                  <Target className="w-3 h-3 text-purple-500" /> Required_Optimization
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {report.missing.map((word: string) => (
+                    <div key={word} className="p-3 bg-white/5 border border-white/5 hover:border-purple-500/50 transition-all cursor-none group">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-purple-400">+{word}</span>
+                    </div>
+                  ))}
                 </div>
-
-                {showComparison ? (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-6 bg-black rounded-2xl border border-white/5">
-                      <p className="text-[8px] font-black uppercase text-slate-600 mb-2 tracking-tighter">Legacy ATS</p>
-                      <span className="text-4xl font-black italic">{report.legacyScore}%</span>
-                    </div>
-                    <div className="text-center p-6 bg-black rounded-2xl border border-purple-500/20">
-                      <p className="text-[8px] font-black uppercase text-purple-400 mb-2 tracking-tighter">AI/Neural</p>
-                      <span className="text-4xl font-black italic text-purple-500">{report.neuralScore}%</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {report.missing.map((word: string) => (
-                      <span key={word} className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest text-slate-400 hover:border-purple-500 transition-colors cursor-crosshair">
-                        {word}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
+
+              {/* ACTION: GLOBAL BROADCAST */}
+              <button 
+                onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.origin}`, '_blank')}
+                className="w-full bg-transparent border border-purple-500/50 py-6 text-[10px] font-black uppercase tracking-[0.5em] hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-4 italic"
+              >
+                Broadcast_Result <Share2 className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
       </main>
 
-      {/* 3. TIGHT FOOTER */}
-      <footer className="py-20 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-black italic uppercase tracking-tighter mb-1">ATS<span className="text-purple-600">.PRO</span></h2>
-            <p className="text-[9px] font-black text-slate-700 tracking-[0.4em] uppercase">Built for Elite Professionals • 2026</p>
-          </div>
-          <div className="flex gap-8">
-            <Link href="/privacy" className="text-[9px] font-black text-slate-500 hover:text-white uppercase tracking-[0.2em] transition-all italic underline decoration-purple-600/30 underline-offset-4">Privacy Policy</Link>
-            <Link href="/terms" className="text-[9px] font-black text-slate-500 hover:text-white uppercase tracking-[0.2em] transition-all italic">Terms</Link>
-          </div>
+      {/* FOOTER: MINIMALIST HUB */}
+      <footer className="p-20 border-t border-white/5 flex flex-col items-center gap-10">
+        <div className="flex gap-20">
+          <Link href="/privacy" className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 hover:text-white transition-all italic underline decoration-purple-600/30 underline-offset-8">Privacy_Protocol</Link>
+          <Link href="/terms" className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 hover:text-white transition-all italic">Legal_Manifesto</Link>
         </div>
+        <p className="text-[8px] font-bold text-slate-800 uppercase tracking-[1em]">The Future of Talent is Decentralized • MMXXVI-MCXXVI</p>
       </footer>
     </div>
   );
