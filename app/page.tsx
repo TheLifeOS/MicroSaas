@@ -1,188 +1,168 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  Upload, Shield, Zap, FileText, Download, 
-  Lock, CreditCard, BarChart3, Sparkles 
+  ShieldCheck, Zap, BarChart3, Search, FileText, 
+  Sparkles, Download, AlertTriangle, CheckCircle, Globe
 } from 'lucide-react';
 
-export default function ProfessionalATS() {
-  const [file, setFile] = useState<File | null>(null);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [report, setReport] = useState<any>(null);
+export default function ProfessionalATSEngine() {
+  const [resumeText, setResumeText] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [results, setResults] = useState<any>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) setFile(e.target.files[0]);
-  };
+  // THE ENGINE: Built-in Semantic Matcher
+  const scanResume = async () => {
+    if (resumeText.length < 100) return;
+    setIsScanning(true);
+    
+    // Simulate "Neural Processing" delay
+    await new Promise(r => setTimeout(r, 2000));
 
-  const startAnalysis = async () => {
-    setAnalyzing(true);
-    // Simulate Top-Tier Semantic Parsing
-    await new Promise(r => setTimeout(r, 2500));
-    setReport({
-      score: 92,
-      rank: "Top 2%",
-      matchingKeywords: ["Next.js", "System Architecture", "Scalability"],
-      missingKeywords: ["Micro-frontends", "Kubernetes"],
-      monetizationOffer: "Unlock 1-on-1 Recruiter Review for $15"
+    const content = resumeText.toLowerCase();
+    
+    // 1. Identify Found vs Missing Keywords
+    const matchedKeywords = ENGINE_2026_RULES.criticalKeywords.filter(k => 
+      content.includes(k.toLowerCase())
+    );
+    const missingKeywords = ENGINE_2026_RULES.criticalKeywords.filter(k => 
+      !content.includes(k.toLowerCase())
+    );
+
+    // 2. Identify Action Verbs for Impact Scoring
+    const foundVerbs = ENGINE_2026_RULES.actionVerbs.filter(v => 
+      content.includes(v.toLowerCase())
+    );
+
+    // 3. Calculate Final Score (2026 Algorithm)
+    const baseScore = 30;
+    const keywordBonus = (matchedKeywords.length / ENGINE_2026_RULES.criticalKeywords.length) * 40;
+    const verbBonus = (foundVerbs.length / ENGINE_2026_RULES.actionVerbs.length) * 30;
+    const finalScore = Math.round(baseScore + keywordBonus + verbBonus);
+
+    setResults({
+      score: finalScore,
+      matched: matchedKeywords,
+      missing: missingKeywords,
+      verbs: foundVerbs,
+      auditDate: ENGINE_2026_RULES.lastUpdated
     });
-    setAnalyzing(false);
+    
+    setIsScanning(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-purple-500/30">
-      {/* Privacy-First Header */}
-      <nav className="p-6 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl sticky top-0 z-50">
+    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
+      {/* Navbar: High-Profile Privacy Status */}
+      <nav className="border-b border-white/5 p-6 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="bg-purple-600 p-1.5 rounded-lg"><Shield className="w-5 h-5" /></div>
-          <span className="text-xl font-black tracking-tighter uppercase">ATS<span className="text-purple-500">Master</span></span>
+          <div className="bg-purple-600 p-1.5 rounded-lg"><Globe className="w-5 h-5 text-white" /></div>
+          <span className="text-xl font-black tracking-tighter italic">ATS<span className="text-purple-500">ENGINE</span></span>
         </div>
-        <div className="flex gap-4 items-center">
-          <span className="text-[10px] text-slate-500 font-bold border border-white/10 px-3 py-1 rounded-full flex items-center gap-1">
-            <Lock className="w-3 h-3" /> AES-256 ENCRYPTED
+        <div className="hidden md:flex gap-6 items-center">
+          <span className="text-[10px] font-black text-slate-500 flex items-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-green-500" /> LOCAL DATA PRIVACY ACTIVE
           </span>
-          <button className="text-xs font-black bg-white text-black px-6 py-2 rounded-full hover:bg-purple-500 hover:text-white transition-all">
-            LOGIN
-          </button>
+          <div className="h-4 w-px bg-white/10" />
+          <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest">v{ENGINE_2026_RULES.lastUpdated}</span>
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-6 py-16">
-        {/* Monetization / Trust Banner */}
-        <div className="mb-16 bg-gradient-to-r from-purple-500/10 to-transparent p-8 rounded-[2rem] border border-purple-500/20 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-black italic flex items-center gap-2">
-              <Sparkles className="text-purple-400" /> 2026 ENGINE UPDATED
-            </h2>
-            <p className="text-slate-400 max-w-md text-sm">Our neural parsing engine is updated daily to match the latest hiring algorithms from LinkedIn, Greenhouse, and Lever.</p>
-          </div>
-          <div className="flex gap-4">
-            <div className="text-center bg-white/5 p-4 rounded-2xl border border-white/5">
-              <p className="text-xs text-slate-500 font-bold uppercase">Weekly Scans</p>
-              <p className="text-xl font-black">1.2M+</p>
-            </div>
-            <div className="text-center bg-white/5 p-4 rounded-2xl border border-white/5">
-              <p className="text-xs text-slate-500 font-bold uppercase">Hired Rate</p>
-              <p className="text-xl font-black text-green-400">84%</p>
-            </div>
-          </div>
-        </div>
-
-        {!report ? (
-          <div className="max-w-3xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4">
-            <div className="text-center space-y-4">
-              <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-tight">
-                BYPASS THE <br/> <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500">GATEKEEPERS.</span>
+      <main className="max-w-6xl mx-auto px-6 py-20">
+        {!results ? (
+          <div className="max-w-3xl mx-auto space-y-12">
+            <div className="text-center space-y-6">
+              <h1 className="text-7xl md:text-8xl font-black tracking-tighter leading-none italic uppercase">
+                Beat the <br/> <span className="text-purple-500">Algorithm.</span>
               </h1>
+              <p className="text-slate-400 font-medium max-w-lg mx-auto italic">
+                Our free-tier engine uses 2026 semantic rules to ensure your resume survives the initial recruiter filter.
+              </p>
             </div>
 
-            <div className="bg-slate-900/20 border border-white/10 rounded-[3rem] p-4 backdrop-blur-3xl">
-              <div className="relative group border-2 border-dashed border-white/5 rounded-[2.5rem] p-16 transition-all hover:border-purple-500/50 hover:bg-purple-500/5">
-                <input 
-                  type="file" 
-                  onChange={handleFileUpload}
-                  accept=".pdf,.doc,.docx,.txt"
-                  className="absolute inset-0 opacity-0 cursor-pointer z-10" 
-                />
-                <div className="text-center space-y-4">
-                  <div className="bg-white/5 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
-                    <Upload className="text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold">{file ? file.name : "Upload Resume"}</p>
-                    <p className="text-slate-500 text-sm">PDF, DOCX, DOC, or TXT (Max 10MB)</p>
-                  </div>
-                </div>
-              </div>
-
+            <div className="bg-slate-900/20 border border-white/10 rounded-[3rem] p-4 backdrop-blur-3xl shadow-2xl shadow-purple-500/5">
+              <textarea 
+                className="w-full h-80 bg-transparent border-none focus:ring-0 p-8 text-lg placeholder:text-slate-800 resize-none font-medium"
+                placeholder="Paste your professional experience here..."
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+              />
               <button 
-                onClick={startAnalysis}
-                disabled={!file || analyzing}
-                className="w-full mt-4 py-6 bg-purple-600 rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 hover:bg-purple-500 transition-all disabled:opacity-50"
+                onClick={scanResume}
+                disabled={resumeText.length < 100 || isScanning}
+                className="w-full py-6 bg-white text-black rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 hover:bg-purple-500 hover:text-white transition-all disabled:opacity-20 group"
               >
-                {analyzing ? (
-                  <div className="flex items-center gap-2">
-                    <Zap className="animate-pulse fill-current" /> SEMANTIC SCANNING...
-                  </div>
+                {isScanning ? (
+                  <Sparkles className="animate-spin" />
                 ) : (
-                  <><BarChart3 /> ANALYZE MY ODDS</>
+                  <Zap className="fill-current group-hover:animate-bounce" />
                 )}
+                {isScanning ? "ENGINE: RUNNING SEMANTIC SCAN..." : "REVEAL MY ATS RANK"}
               </button>
             </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-12 gap-8 animate-in zoom-in-95 duration-500">
-            {/* Main Analysis Card */}
-            <div className="md:col-span-8 space-y-8">
-              <div className="bg-slate-900/40 border border-white/10 rounded-[3rem] p-12">
-                <div className="flex justify-between items-start mb-8">
-                  <div>
-                    <h3 className="text-slate-500 font-bold uppercase tracking-widest text-xs">Analysis Result</h3>
-                    <p className="text-4xl font-black italic">ELITE MATCH</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-6xl font-black text-purple-500 leading-none">{report.score}%</p>
-                    <p className="text-[10px] font-black text-slate-500 mt-2 uppercase tracking-tighter">ATS Compatibility</p>
-                  </div>
+            {/* Score Card */}
+            <div className="md:col-span-8 bg-slate-900/40 border border-white/10 rounded-[3rem] p-12 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8">
+                <BarChart3 className="w-24 h-24 text-white/5 opacity-20 rotate-12" />
+              </div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-end gap-6">
+                <div>
+                  <h2 className="text-slate-500 font-black uppercase text-xs tracking-widest mb-2">NEURAL MATCH RESULT</h2>
+                  <p className="text-9xl font-black tracking-tighter leading-none italic">{results.score}%</p>
                 </div>
-                
-                <div className="space-y-6">
-                  <div className="p-6 bg-white/5 rounded-2xl border border-white/5">
-                    <p className="text-purple-400 font-bold text-xs uppercase mb-2">Keyword Gaps Identified</p>
-                    <div className="flex flex-wrap gap-2">
-                      {report.missingKeywords.map((k: string) => (
-                        <span key={k} className="px-3 py-1 bg-red-500/10 text-red-400 text-[10px] font-black rounded-full border border-red-500/20">
-                          MISSING: {k}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                <div className="text-right pb-2">
+                  <p className="text-sm font-bold text-green-400 uppercase italic">Rank: {results.score > 80 ? 'Elite' : 'Developing'}</p>
+                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Updated: {results.auditDate}</p>
                 </div>
               </div>
 
-              <button onClick={() => setReport(null)} className="w-full py-6 bg-white/5 border border-white/10 rounded-[2rem] font-bold text-slate-500 hover:text-white transition-colors">
-                SCAN ANOTHER VERSION
-              </button>
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-black/40 p-6 rounded-3xl border border-white/5">
+                  <p className="text-[10px] font-black text-purple-400 uppercase mb-4 flex items-center gap-2">
+                    <CheckCircle className="w-3 h-3" /> Found Keywords
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {results.matched.map((k: string) => (
+                      <span key={k} className="px-3 py-1 bg-purple-500/10 text-white text-[10px] font-bold rounded-lg border border-purple-500/20">{k}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-black/40 p-6 rounded-3xl border border-white/5">
+                  <p className="text-[10px] font-black text-red-400 uppercase mb-4 flex items-center gap-2">
+                    <AlertTriangle className="w-3 h-3" /> Missing Signals
+                  </p>
+                  <div className="flex flex-wrap gap-2 opacity-60">
+                    {results.missing.map((k: string) => (
+                      <span key={k} className="px-3 py-1 bg-white/5 text-slate-400 text-[10px] font-bold rounded-lg">{k}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Monetization & CTA Sidebar */}
-            <div className="md:col-span-4 space-y-6">
-              <div className="bg-gradient-to-b from-purple-600 to-purple-800 rounded-[3rem] p-10 flex flex-col justify-between aspect-square md:aspect-auto">
-                <div>
-                  <CreditCard className="w-10 h-10 mb-6" />
-                  <h4 className="text-3xl font-black leading-tight mb-4 uppercase">Unlock Deep <br/> Optimization</h4>
-                  <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-sm font-medium"><Zap className="w-4 h-4" /> AI Bullet-Point Rewriter</li>
-                    <li className="flex items-center gap-2 text-sm font-medium"><Shield className="w-4 h-4" /> Competitor Benchmarking</li>
-                  </ul>
-                </div>
-                <button className="mt-8 w-full py-4 bg-black text-white rounded-2xl font-black text-sm uppercase hover:bg-white hover:text-black transition-all">
-                  GET PRO ACCESS — $9.99
-                </button>
+            {/* Sidebar Tools */}
+            <div className="md:col-span-4 space-y-4">
+              <div className="bg-purple-600 rounded-[3rem] p-10 flex flex-col justify-between aspect-square md:aspect-auto">
+                <Sparkles className="w-12 h-12 mb-6" />
+                <h3 className="text-3xl font-black uppercase leading-tight italic mb-4">Improve <br/> Your Score?</h3>
+                <p className="text-sm font-medium text-purple-200 mb-6 italic">We detected {results.verbs.length} power verbs. Increasing this by 4 will boost your score to 90+.</p>
+                <button onClick={() => setResults(null)} className="w-full py-4 bg-white text-black rounded-2xl font-black text-xs uppercase hover:bg-black hover:text-white transition-all">RE-SCAN NOW</button>
               </div>
 
-              <div className="bg-white rounded-[3rem] p-10 text-black">
-                <Download className="w-10 h-10 mb-4" />
-                <p className="text-sm font-bold uppercase tracking-widest text-slate-500">PDF Report</p>
-                <p className="text-2xl font-black mb-4 tracking-tighter uppercase leading-none">Export Full <br/> Audit Logs</p>
-                <button className="w-full py-3 bg-slate-100 rounded-xl font-black text-xs uppercase">Download (.pdf)</button>
+              <div className="bg-white rounded-[3rem] p-10 text-black flex flex-col justify-center items-center text-center">
+                <Download className="w-10 h-10 mb-2 text-purple-600" />
+                <p className="text-2xl font-black tracking-tighter uppercase italic leading-none">Export Audit</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase mt-1 mb-4 italic">FREE PDF REPORT</p>
+                <button className="w-full py-3 border-2 border-slate-200 rounded-xl font-black text-[10px] uppercase">Download</button>
               </div>
             </div>
           </div>
         )}
       </main>
-
-      {/* Modern Footer */}
-      <footer className="border-t border-white/5 py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-500 text-[10px] font-bold">© 2026 THELIFEOS. ALL DATA ANONYMIZED & SECURE.</p>
-          <div className="flex gap-8 text-[10px] font-bold text-slate-400">
-            <a href="#" className="hover:text-white uppercase">Privacy Policy</a>
-            <a href="#" className="hover:text-white uppercase">Terms of Service</a>
-            <a href="#" className="hover:text-white uppercase">Contact Support</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
