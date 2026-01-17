@@ -1,21 +1,20 @@
-import type { Metadata } from "next";
-import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "ResumeATS Pro - AI-Powered Resume Optimizer",
-  description: "Beat ATS systems. Get 67% more interviews with AI-powered resume optimization.",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
-      </body>
-    </html>
-  );
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ResumeTech Pro",
+  "operatingSystem": "All",
+  "applicationCategory": "CareerService",
+  "offers": {
+    "@type": "Offer",
+    "price": "0.00",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "FAANG Benchmarking",
+    "Real-time Salary Prediction",
+    "ATS Ghosting Probability",
+    "Semantic Keyword Gap Analysis"
+  ]
 }
+</script>
