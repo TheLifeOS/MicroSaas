@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    reactCompiler: true,
-  },
-  // Ensure we use the latest image optimization for 2026
+  // In Next.js 16, this moved out of "experimental"
+  reactCompiler: true,
+  
   images: {
     formats: ['image/avif', 'image/webp'],
   },
