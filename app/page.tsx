@@ -3,18 +3,47 @@
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, Target, Zap, TrendingUp, Shield, CheckCircle, XCircle, AlertCircle, Sparkles, ArrowRight, Download, Copy, Check } from 'lucide-react';
 
-export default function ResumeATSOptimizer() {
-  const [file, setFile] = useState(null);
-  const [resumeText, setResumeText] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
-  const [analyzing, setAnalyzing] = useState(false);
-  const [results, setResults] = useState(null);
-  const [activeTab, setActiveTab] = useState('upload');
-  const [copied, setCopied] = useState(false);
-  const fileInputRef = useRef(null);
+interface Improvement {
+  type: 'critical' | 'warning' | 'info';
+  title: string;
+  current: string;
+  suggested: string;
+  impact: string;
+}
 
-  const handleFileUpload = async (e) => {
-    const uploadedFile = e.target.files[0];
+interface ATSCompatibility {
+  system: string;
+  status: boolean;
+  confidence: number;
+}
+
+interface AnalysisResults {
+  score: number;
+  breakdown: {
+    formatting: number;
+    keywords: number;
+    experience: number;
+    education: number;
+    contact: number;
+  };
+  keywords: string[];
+  matchScore: number | null;
+  improvements: Improvement[];
+  atsCompatibility: ATSCompatibility[];
+}
+
+export default function ResumeATSOptimizer() {
+  const [file, setFile] = useState<File | null>(null);
+  const [resumeText, setResumeText] = useState<string>('');
+  const [jobDescription, setJobDescription] = useState<string>('');
+  const [analyzing, setAnalyzing] = useState<boolean>(false);
+  const [results, setResults] = useState<AnalysisResults | null>(null);
+  const [activeTab, setActiveTab] = useState<'upload' | 'results'>('upload');
+  const [copied, setCopied] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = e.target.files?.[0];
     if (!uploadedFile) return;
 
     setFile(uploadedFile);
@@ -46,7 +75,7 @@ export default function ResumeATSOptimizer() {
     }, 2000);
   };
 
-  const generateAnalysis = (resume, job) => {
+  const generateAnalysis = (resume: string, job: string): AnalysisResults => {
     const words = resume.toLowerCase().split(/\s+/);
     const uniqueWords = new Set(words);
     
@@ -115,13 +144,13 @@ export default function ResumeATSOptimizer() {
     };
   };
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const ScoreCircle = ({ score }) => {
+  const ScoreCircle = ({ score }: { score: number }) => {
     const radius = 70;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (score / 100) * circumference;
