@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, Target, Zap, TrendingUp, Shield, CheckCircle, XCircle, AlertCircle, Sparkles, ArrowRight, Download, Copy, Check } from 'lucide-react';
 
