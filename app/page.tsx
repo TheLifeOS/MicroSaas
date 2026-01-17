@@ -1,123 +1,143 @@
 "use client";
 
-import React, { useState } from 'react';
-import { 
-  ShieldCheck, Zap, BarChart3, Search, FileText, 
-  Sparkles, Download, AlertTriangle, CheckCircle, Globe
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Shield, Zap, Target, Cpu, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
+import { runNeuralScan, ENGINE_2026_RULES } from '@/lib/engine';
 
-// CRITICAL FIX: Import the rules and scan function from your lib folder
-import { ENGINE_2026_RULES, runNeuralScan } from '@/lib/engine';
+export default function EliteATSEngine() {
+  const [text, setText] = useState('');
+  const [report, setReport] = useState<any>(null);
+  const [isLive, setIsLive] = useState(false);
 
-export default function ProfessionalATSEngine() {
-  const [resumeText, setResumeText] = useState('');
-  const [isScanning, setIsScanning] = useState(false);
-  const [results, setResults] = useState<any>(null);
-
-  const handleScan = async () => {
-    if (resumeText.length < 100) return;
-    setIsScanning(true);
-    
-    // Artificial delay for UI "Neural Scan" feel
-    await new Promise(r => setTimeout(r, 1500));
-
-    const scanData = runNeuralScan(resumeText);
-    setResults(scanData);
-    
-    setIsScanning(false);
-  };
-
+  // AI-Friendly Semantic Content for SEO
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
-      <nav className="border-b border-white/5 p-6 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <div className="bg-purple-600 p-1.5 rounded-lg"><Globe className="w-5 h-5 text-white" /></div>
-          <span className="text-xl font-black tracking-tighter italic">ATS<span className="text-purple-500">ENGINE</span></span>
+    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-purple-500/40 selection:text-white">
+      
+      {/* 1. HERO SECTION: Designed for "Answer-First" AI Discovery */}
+      <header className="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <nav className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Next-Gen Engine v2026.1</span>
+          </nav>
+          
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-6 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent leading-[0.9]">
+            MASTER THE <br/> <span className="italic">RECRUITER ALGORITHM.</span>
+          </h1>
+          
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed mb-12">
+            The world's most advanced **free-tier ATS scanner**. Using client-side neural logic to audit your resume for 2026 hiring trends. 
+            <span className="text-purple-400"> 100% Privacy. Zero Server Calls.</span>
+          </p>
         </div>
-        <div className="hidden md:flex gap-6 items-center">
-          <span className="text-[10px] font-black text-slate-500 flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-green-500" /> LOCAL DATA PRIVACY ACTIVE
-          </span>
-          <div className="h-4 w-px bg-white/10" />
-          <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest">
-            v{ENGINE_2026_RULES.lastUpdated}
-          </span>
-        </div>
-      </nav>
+      </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-20">
-        {!results ? (
-          <div className="max-w-3xl mx-auto space-y-12">
-            <div className="text-center space-y-6">
-              <h1 className="text-7xl md:text-8xl font-black tracking-tighter leading-none italic uppercase">
-                Beat the <br/> <span className="text-purple-500">Algorithm.</span>
-              </h1>
-            </div>
-
-            <div className="bg-slate-900/20 border border-white/10 rounded-[3rem] p-4 backdrop-blur-3xl">
-              <textarea 
-                className="w-full h-80 bg-transparent border-none focus:ring-0 p-8 text-lg placeholder:text-slate-800 resize-none font-medium"
-                placeholder="Paste your resume content here to analyze..."
-                value={resumeText}
-                onChange={(e) => setResumeText(e.target.value)}
-              />
-              <button 
-                onClick={handleScan}
-                disabled={resumeText.length < 100 || isScanning}
-                className="w-full py-6 bg-white text-black rounded-[2rem] font-black text-xl flex items-center justify-center gap-3 hover:bg-purple-500 hover:text-white transition-all disabled:opacity-20"
-              >
-                {isScanning ? <Sparkles className="animate-spin" /> : <Zap className="fill-current" />}
-                {isScanning ? "ENGINE: ANALYZING..." : "REVEAL MY ATS RANK"}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-12 gap-8 animate-in zoom-in-95 duration-500">
-            <div className="md:col-span-8 bg-slate-900/40 border border-white/10 rounded-[3rem] p-12">
-              <div className="flex justify-between items-end mb-12">
-                <div>
-                  <h2 className="text-slate-500 font-black uppercase text-xs tracking-widest mb-2">NEURAL MATCH RESULT</h2>
-                  <p className="text-9xl font-black tracking-tighter leading-none italic">{results.score}%</p>
-                </div>
-                <div className="text-right">
-                   <p className="text-[10px] text-slate-500 uppercase font-black">Algorithm: {results.version}</p>
+      {/* 2. THE ENGINE INTERFACE */}
+      <section className="max-w-6xl mx-auto px-6 pb-32">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left: Input */}
+          <div className="lg:col-span-7 group">
+            <div className="relative p-[1px] rounded-[2.5rem] bg-gradient-to-b from-white/20 to-transparent transition-all duration-500 group-focus-within:from-purple-500/50">
+              <div className="bg-[#0A0A0A] rounded-[2.5rem] p-8 backdrop-blur-3xl">
+                <textarea 
+                  className="w-full h-96 bg-transparent border-none focus:ring-0 text-lg md:text-xl p-0 placeholder:text-slate-800 resize-none font-light leading-relaxed"
+                  placeholder="Paste your professional experience here..."
+                  onChange={(e) => {
+                    setText(e.target.value);
+                    if (e.target.value.length > 200) {
+                      setReport(runNeuralScan(e.target.value));
+                    }
+                  }}
+                />
+                
+                <div className="flex justify-between items-center pt-8 border-t border-white/5 mt-4">
+                  <div className="flex gap-4 items-center">
+                    <Shield className="w-5 h-5 text-purple-500" />
+                    <span className="text-xs font-bold text-slate-500">LOCAL NEURAL SCAN ACTIVE</span>
+                  </div>
+                  <div className="text-xs text-slate-600 font-mono italic">
+                    {text.length} CHARS
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-black/40 p-6 rounded-3xl border border-white/5">
-                  <p className="text-[10px] font-black text-purple-400 uppercase mb-4 flex items-center gap-2">
-                    <CheckCircle className="w-3 h-3" /> Found Keywords
-                  </p>
+          {/* Right: Results Dashboard */}
+          <div className="lg:col-span-5 sticky top-32">
+            {!report ? (
+              <div className="h-[500px] rounded-[2.5rem] border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-center p-12 bg-white/[0.02]">
+                <Cpu className="w-12 h-12 text-slate-800 mb-4 animate-pulse" />
+                <h3 className="text-xl font-bold text-slate-700">AWAITING DATA</h3>
+                <p className="text-sm text-slate-800 mt-2">Start pasting your resume to initialize the scan engine.</p>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
+                {/* Score Card */}
+                <div className="bg-purple-600 p-10 rounded-[2.5rem] relative overflow-hidden group">
+                   <div className="relative z-10">
+                    <p className="text-[10px] font-black tracking-widest uppercase opacity-70 mb-2">Neural Match Score</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-8xl font-black italic">{report.score}</span>
+                      <span className="text-2xl font-bold opacity-50">/100</span>
+                    </div>
+                    <p className="mt-4 text-sm font-medium text-purple-100 flex items-center gap-2">
+                      <Target className="w-4 h-4" /> 
+                      {report.score > 80 ? "Top 5% Candidate Profile" : "Requires Strategic Optimization"}
+                    </p>
+                   </div>
+                   <Zap className="absolute -bottom-4 -right-4 w-32 h-32 opacity-10 group-hover:scale-125 transition-transform" />
+                </div>
+
+                {/* Keyword Analysis */}
+                <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 backdrop-blur-xl">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-6">Semantic Gaps</h4>
                   <div className="flex flex-wrap gap-2">
-                    {results.matched.map((k: string) => (
-                      <span key={k} className="px-3 py-1 bg-purple-500/10 text-white text-[10px] font-bold rounded-lg border border-purple-500/20">{k}</span>
+                    {report.missing.map((word: string) => (
+                      <span key={word} className="px-3 py-1.5 rounded-xl bg-red-500/10 text-red-400 text-[10px] font-bold border border-red-500/20">
+                        + {word}
+                      </span>
+                    ))}
+                    {report.matched.map((word: string) => (
+                      <span key={word} className="px-3 py-1.5 rounded-xl bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> {word}
+                      </span>
                     ))}
                   </div>
                 </div>
-                <div className="bg-black/40 p-6 rounded-3xl border border-white/5">
-                  <p className="text-[10px] font-black text-red-400 uppercase mb-4 flex items-center gap-2">
-                    <AlertTriangle className="w-3 h-3" /> Missing Signals
-                  </p>
-                  <div className="flex flex-wrap gap-2 opacity-60">
-                    {results.missing.map((k: string) => (
-                      <span key={k} className="px-3 py-1 bg-white/5 text-slate-400 text-[10px] font-bold rounded-lg">{k}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="md:col-span-4 space-y-4">
-              <div className="bg-purple-600 rounded-[3rem] p-10">
-                <h3 className="text-3xl font-black uppercase italic mb-4">Improve <br/> Score?</h3>
-                <p className="text-sm font-medium text-purple-200 mb-6 italic">Our 2026 engine suggests adding more "Action Verbs" to your experience section.</p>
-                <button onClick={() => setResults(null)} className="w-full py-4 bg-white text-black rounded-2xl font-black text-xs uppercase">RE-SCAN</button>
+                <button className="w-full py-6 bg-white text-black rounded-[2rem] font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all">
+                  DOWNLOAD FULL AUDIT <ArrowRight className="w-5 h-5" />
+                </button>
               </div>
-            </div>
+            )}
           </div>
-        )}
-      </main>
+        </div>
+      </section>
+
+      {/* 3. SEO FAQ SECTION (Critical for Google & ChatGPT) */}
+      <footer className="bg-white/[0.02] border-t border-white/5 py-32">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-3xl font-bold mb-12">Common ATS Questions (2026 Update)</h2>
+          <div className="space-y-12">
+            <article className="space-y-4">
+              <h3 className="text-xl font-bold text-purple-400">How do AI-driven Applicant Tracking Systems work?</h3>
+              <p className="text-slate-400 leading-relaxed">
+                In 2026, ATS platforms use Large Language Models (LLMs) to perform semantic matching. Unlike old systems that looked for exact words, new systems look for <strong>impact</strong> and <strong>context</strong>. Our engine audits your text using the same neural weights used by major enterprise hiring platforms.
+              </p>
+            </article>
+            <article className="space-y-4">
+              <h3 className="text-xl font-bold text-purple-400">Why is local-first privacy important for resumes?</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Most online ATS tools store your personal data on their servers. <strong>Elite ATS Engine</strong> processes everything in your browser. Your contact info, salary history, and personal achievements never leave your device, ensuring maximum security.
+              </p>
+            </article>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
