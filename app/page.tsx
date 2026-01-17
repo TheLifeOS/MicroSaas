@@ -2,21 +2,44 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Upload, FileText, CheckCircle, XCircle, AlertCircle, TrendingUp, Target, Award, Zap, Download, Copy, RefreshCw, Sparkles, Shield, Brain, Star, Code, Users, BarChart3, Briefcase, DollarSign, Clock, TrendingDown } from 'lucide-react';
 
+interface AnalysisResults {
+  score: number;
+  atsResults: any[];
+  keywords: any;
+  impact: any;
+  sections: any;
+  sectionCount: number;
+  wordCount: number;
+  compatibility: any;
+  missingKeywords: string[];
+  strengths: string[];
+  percentile: string;
+  benchmarkComparison: any;
+  foundKeywords: any[];
+}
+
+interface HistoryEntry {
+  id: number;
+  date: string;
+  score: number;
+  keywords: number;
+  wordCount: number;
+}
+
 const UltimateATSAnalyzer = () => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<AnalysisResults | null>(null);
   const [aiMode, setAiMode] = useState(false);
-  const [enhanced, setEnhanced] = useState(null);
+  const [enhanced, setEnhanced] = useState<any[] | null>(null);
   const [totalScans, setTotalScans] = useState(47823);
-  const [userHistory, setUserHistory] = useState([]);
+  const [userHistory, setUserHistory] = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [jobMatches, setJobMatches] = useState(null);
-  const [successPredictor, setSuccessPredicted] = useState(null);
-  const fileInputRef = useRef(null);
+  const [jobMatches, setJobMatches] = useState<any>(null);
+  const [successPredictor, setSuccessPredicted] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // PROPRIETARY RESUME DATABASE - This is your competitive moat
   const SUCCESSFUL_RESUME_DATABASE = {
     avgKeywords: 45,
     avgExpertKeywords: 6,
@@ -31,16 +54,15 @@ const UltimateATSAnalyzer = () => {
     }
   };
 
-  // REAL JOB DATABASE SIMULATION - Your unique data
-  const JOB_DATABASE = {
-    'kubernetes': { companies: ['Google', 'Amazon', 'Netflix'], avgSalary: 165000, openings: 342 },
-    'aws': { companies: ['Amazon', 'Uber', 'Airbnb'], avgSalary: 155000, openings: 567 },
-    'docker': { companies: ['Docker', 'Meta', 'Stripe'], avgSalary: 148000, openings: 423 },
-    'react': { companies: ['Meta', 'Netflix', 'Airbnb'], avgSalary: 145000, openings: 789 },
-    'python': { companies: ['Google', 'Dropbox', 'Spotify'], avgSalary: 142000, openings: 891 },
-    'typescript': { companies: ['Microsoft', 'Slack', 'Notion'], avgSalary: 138000, openings: 445 },
-    'terraform': { companies: ['HashiCorp', 'Snowflake', 'Databricks'], avgSalary: 162000, openings: 234 },
-    'graphql': { companies: ['Meta', 'GitHub', 'Shopify'], avgSalary: 152000, openings: 178 }
+  const JOB_DATABASE: any = {
+    kubernetes: { companies: ['Google', 'Amazon', 'Netflix'], avgSalary: 165000, openings: 342 },
+    aws: { companies: ['Amazon', 'Uber', 'Airbnb'], avgSalary: 155000, openings: 567 },
+    docker: { companies: ['Docker', 'Meta', 'Stripe'], avgSalary: 148000, openings: 423 },
+    react: { companies: ['Meta', 'Netflix', 'Airbnb'], avgSalary: 145000, openings: 789 },
+    python: { companies: ['Google', 'Dropbox', 'Spotify'], avgSalary: 142000, openings: 891 },
+    typescript: { companies: ['Microsoft', 'Slack', 'Notion'], avgSalary: 138000, openings: 445 },
+    terraform: { companies: ['HashiCorp', 'Snowflake', 'Databricks'], avgSalary: 162000, openings: 234 },
+    graphql: { companies: ['Meta', 'GitHub', 'Shopify'], avgSalary: 152000, openings: 178 }
   };
 
   useEffect(() => {
@@ -48,34 +70,34 @@ const UltimateATSAnalyzer = () => {
     loadUserHistory();
   }, []);
 
-  const loadStats = () => {
+  const loadStats = async () => {
     try {
-      const stored = localStorage.getItem('global_scans');
-      if (stored) setTotalScans(parseInt(stored));
+      const result = await window.storage.get('global_scans', true);
+      if (result) setTotalScans(parseInt(result.value));
     } catch (e) {
       setTotalScans(47823);
     }
   };
 
-  const incrementGlobalScans = () => {
+  const incrementGlobalScans = async () => {
     const newTotal = totalScans + 1;
     setTotalScans(newTotal);
     try {
-      localStorage.setItem('global_scans', newTotal.toString());
+      await window.storage.set('global_scans', newTotal.toString(), true);
     } catch (e) {}
   };
 
-  const loadUserHistory = () => {
+  const loadUserHistory = async () => {
     try {
-      const stored = localStorage.getItem('user_resume_history');
-      if (stored) {
-        setUserHistory(JSON.parse(stored));
+      const result = await window.storage.get('user_resume_history');
+      if (result) {
+        setUserHistory(JSON.parse(result.value));
       }
     } catch (e) {}
   };
 
-  const saveToHistory = (analysisResults) => {
-    const historyEntry = {
+  const saveToHistory = async (analysisResults: AnalysisResults) => {
+    const historyEntry: HistoryEntry = {
       id: Date.now(),
       date: new Date().toISOString(),
       score: analysisResults.score,
@@ -87,15 +109,12 @@ const UltimateATSAnalyzer = () => {
     setUserHistory(newHistory);
     
     try {
-      localStorage.setItem('user_resume_history', JSON.stringify(newHistory));
+      await window.storage.set('user_resume_history', JSON.stringify(newHistory));
     } catch (e) {}
   };
-
-  // PROPRIETARY PRE-PROCESSING - Your secret sauce
-  const preprocessResume = (resumeText) => {
+  const preprocessResume = (resumeText: string) => {
     const lower = resumeText.toLowerCase();
     
-    // 1. INDUSTRY-SPECIFIC KEYWORD DATABASE
     const techKeywords = {
       expert: ['kubernetes', 'docker', 'aws', 'gcp', 'azure', 'terraform', 'react', 'vue', 'angular', 'typescript', 'golang', 'rust', 'microservices', 'graphql', 'postgresql', 'mongodb', 'redis', 'kafka', 'elasticsearch', 'jenkins'],
       senior: ['python', 'java', 'javascript', 'node.js', 'ci/cd', 'rest', 'api', 'sql', 'nosql', 'linux', 'git', 'agile', 'scrum', 'spring', 'django', 'flask'],
@@ -103,7 +122,6 @@ const UltimateATSAnalyzer = () => {
       junior: ['github', 'vscode', 'npm', 'yarn', 'debug', 'version control', 'collaboration', 'documentation']
     };
 
-    // 2. EXTRACT ATS-SPECIFIC METRICS
     const atsMetrics = {
       hasEmail: /@/.test(resumeText),
       hasPhone: /\d{3}[-.]?\d{3}[-.]?\d{4}/.test(resumeText),
@@ -111,12 +129,12 @@ const UltimateATSAnalyzer = () => {
       hasGithub: /github/i.test(resumeText),
       hasNoTables: !/\|{2,}/.test(resumeText),
       hasNoImages: true,
-      wordCount: resumeText.split(/\s+/).length
+      wordCount: resumeText.split(/\s+/).length,
+      isOptimalLength: false
     };
 
     atsMetrics.isOptimalLength = atsMetrics.wordCount >= 300 && atsMetrics.wordCount <= 800;
 
-    // 3. SECTION DETECTION
     const sections = {
       experience: /experience|employment|work history/i.test(resumeText),
       education: /education|degree|university|college/i.test(resumeText),
@@ -126,9 +144,8 @@ const UltimateATSAnalyzer = () => {
       certifications: /certification|certified|license/i.test(resumeText)
     };
 
-    // 4. KEYWORD COUNTING WITH WEIGHTS
     let keywordData = { expert: 0, senior: 0, mid: 0, junior: 0, total: 0 };
-    let foundKeywords = [];
+    let foundKeywords: any[] = [];
     
     Object.entries(techKeywords).forEach(([level, keywords]) => {
       keywords.forEach(kw => {
@@ -136,20 +153,18 @@ const UltimateATSAnalyzer = () => {
         const matches = resumeText.match(regex);
         if (matches) {
           const count = matches.length;
-          keywordData[level] += count;
+          keywordData[level as keyof typeof keywordData] += count;
           keywordData.total += count;
           foundKeywords.push({ keyword: kw, level, count });
         }
       });
     });
 
-    // 5. IMPACT ANALYSIS
     const impactWords = ['increased', 'reduced', 'improved', 'optimized', 'automated', 'implemented', 'developed', 'architected', 'launched', 'scaled', 'migrated', 'refactored', 'designed', 'built', 'led', 'managed', 'created', 'established', 'delivered'];
     const impactCount = impactWords.filter(w => lower.includes(w)).length;
     
     const quantifiers = resumeText.match(/(\d+%|\d+x|\d+\+|million|thousand|billion|\$\d+k?|\d{1,3},\d{3})/gi) || [];
 
-    // 6. COMPARE TO DATABASE BENCHMARKS
     const percentile = keywordData.total >= SUCCESSFUL_RESUME_DATABASE.avgKeywords ? 
       (keywordData.total >= SUCCESSFUL_RESUME_DATABASE.avgKeywords * 1.5 ? 'Top 10%' : 'Top 25%') :
       (keywordData.total >= SUCCESSFUL_RESUME_DATABASE.avgKeywords * 0.7 ? 'Top 50%' : 'Bottom 50%');
@@ -170,26 +185,21 @@ const UltimateATSAnalyzer = () => {
     };
   };
 
-  // PROPRIETARY SCORING ALGORITHM - ResumeTech Score™
-  const calculateResumeTechScore = (preprocessedData) => {
+  const calculateResumeTechScore = (preprocessedData: any) => {
     let baseScore = 45;
     const { keywordData, atsMetrics, sections, impactCount, quantifiers, benchmarkComparison } = preprocessedData;
 
-    // Keyword scoring with proprietary weights
     baseScore += keywordData.expert * 4;
     baseScore += keywordData.senior * 3;
     baseScore += keywordData.mid * 2;
     baseScore += keywordData.junior * 1;
 
-    // Impact scoring
     baseScore += impactCount * 2;
     baseScore += quantifiers.length * 3;
 
-    // Section completeness
     const sectionCount = Object.values(sections).filter(Boolean).length;
     baseScore += sectionCount * 3;
 
-    // ATS compatibility bonus
     let compatBonus = 0;
     if (atsMetrics.hasEmail) compatBonus += 5;
     if (atsMetrics.hasPhone) compatBonus += 5;
@@ -200,20 +210,17 @@ const UltimateATSAnalyzer = () => {
     
     baseScore += compatBonus;
 
-    // Benchmark bonus/penalty
     if (benchmarkComparison.keywordsVsAvg > 10) baseScore += 5;
     if (benchmarkComparison.quantifiersVsAvg > 3) baseScore += 4;
 
-    // Cap at 96 (honest scoring)
     return Math.min(96, Math.max(35, Math.round(baseScore)));
   };
 
-  // FEATURE 1: JOB MATCH ENGINE
-  const analyzeJobMatches = (foundKeywords) => {
-    const matches = {};
+  const analyzeJobMatches = (foundKeywords: any[]) => {
+    const matches: any = {};
     let totalOpenings = 0;
     let potentialSalary = 0;
-    let topCompanies = new Set();
+    let topCompanies = new Set<string>();
 
     foundKeywords.forEach(({ keyword, level }) => {
       const jobData = JOB_DATABASE[keyword.toLowerCase()];
@@ -221,7 +228,7 @@ const UltimateATSAnalyzer = () => {
         matches[keyword] = jobData;
         totalOpenings += jobData.openings;
         potentialSalary = Math.max(potentialSalary, jobData.avgSalary);
-        jobData.companies.forEach(c => topCompanies.add(c));
+        jobData.companies.forEach((c: string) => topCompanies.add(c));
       }
     });
 
@@ -238,8 +245,7 @@ const UltimateATSAnalyzer = () => {
     };
   };
 
-  // FEATURE 2: SUCCESS RATE PREDICTOR
-  const predictSuccess = (score, keywordData, quantifiers) => {
+  const predictSuccess = (score: number, keywordData: any, quantifiers: any[]) => {
     const interviewRate = SUCCESSFUL_RESUME_DATABASE.interviewRateByScore[
       score >= 85 ? 85 : score >= 75 ? 75 : score >= 65 ? 65 : 55
     ] || 20;
@@ -264,23 +270,17 @@ const UltimateATSAnalyzer = () => {
       confidenceLevel: score >= 80 ? 'High' : score >= 65 ? 'Medium' : 'Low'
     };
   };
-
-  // MAIN ANALYSIS FUNCTION
-  const analyzeResume = async (resumeText) => {
+  const analyzeResume = async (resumeText: string) => {
     if (!resumeText.trim()) return;
     
     setAnalyzing(true);
-    incrementGlobalScans();
+    await incrementGlobalScans();
     
     await new Promise(r => setTimeout(r, 2000));
 
-    // STEP 1: PROPRIETARY PRE-PROCESSING
     const preprocessed = preprocessResume(resumeText);
-
-    // STEP 2: CALCULATE PROPRIETARY SCORE
     const finalScore = calculateResumeTechScore(preprocessed);
 
-    // STEP 3: ATS SYSTEM SIMULATION (5 major systems)
     const atsResults = [
       { name: 'Workday', score: Math.min(98, finalScore + Math.floor(Math.random() * 8) - 2), parseRate: 92, logo: '🏢' },
       { name: 'Greenhouse', score: Math.min(97, finalScore + Math.floor(Math.random() * 6) - 1), parseRate: 95, logo: '🌱' },
@@ -289,7 +289,6 @@ const UltimateATSAnalyzer = () => {
       { name: 'iCIMS', score: Math.min(95, finalScore + Math.floor(Math.random() * 6) - 2), parseRate: 91, logo: '💼' }
     ];
 
-    // STEP 4: GENERATE INSIGHTS
     const missingKeywords = [];
     if (preprocessed.keywordData.expert < 3) missingKeywords.push('Add 2-3 expert technologies (Kubernetes, AWS, Terraform)');
     if (preprocessed.impactCount < 5) missingKeywords.push('Use more action verbs (optimized, automated, scaled)');
@@ -307,11 +306,10 @@ const UltimateATSAnalyzer = () => {
     if (preprocessed.atsMetrics.isOptimalLength) strengths.push('Optimal length for ATS');
     if (preprocessed.atsMetrics.hasGithub) strengths.push('GitHub profile included');
 
-    // STEP 5: ADDITIONAL FEATURES
     const jobMatches = analyzeJobMatches(preprocessed.foundKeywords);
     const successPrediction = predictSuccess(finalScore, preprocessed.keywordData, preprocessed.quantifiers);
 
-    const analysisResults = {
+    const analysisResults: AnalysisResults = {
       score: finalScore,
       atsResults,
       keywords: preprocessed.keywordData,
@@ -330,21 +328,17 @@ const UltimateATSAnalyzer = () => {
     setResults(analysisResults);
     setJobMatches(jobMatches);
     setSuccessPredicted(successPrediction);
-    saveToHistory(analysisResults);
+    await saveToHistory(analysisResults);
     
     setAnalyzing(false);
   };
 
-  // AI ENHANCEMENT - Fallback without API
   const enhanceWithAI = async () => {
     if (!results) return;
     
     setAiMode(true);
-    
-    // Simulate processing
     await new Promise(r => setTimeout(r, 1500));
     
-    // Generate smart suggestions based on analysis
     const suggestions = [];
     
     if (results.keywords.expert < 3) {
@@ -395,71 +389,57 @@ const UltimateATSAnalyzer = () => {
       });
     }
     
-    if (results.wordCount > 700) {
-      suggestions.push({
-        area: 'Resume Length',
-        current: `${results.wordCount} words (too long)`,
-        improved: 'Trim to 550-650 words by removing redundant job descriptions and focusing on quantified achievements from last 5 years',
-        impact: '+5 points',
-        why: 'ATS systems have higher parse success rates (94% vs 78%) with concise resumes. Recruiters spend avg 6 seconds per resume.',
-        basedOn: '10,000+ successful resumes',
-        confidence: '91%'
-      });
-    }
-    
     setEnhanced(suggestions.slice(0, 5));
     setAiMode(false);
   };
 
-  const handleFileUpload = (e) => {
-    const uploadedFile = e.target.files[0];
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = e.target.files?.[0];
     if (uploadedFile) {
       setFile(uploadedFile);
       const reader = new FileReader();
-      reader.onload = (event) => setText(event.target.result);
+      reader.onload = (event) => setText(event.target?.result as string);
       reader.readAsText(uploadedFile);
     }
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
       setFile(droppedFile);
       const reader = new FileReader();
-      reader.onload = (event) => setText(event.target.result);
+      reader.onload = (event) => setText(event.target?.result as string);
       reader.readAsText(droppedFile);
     }
   };
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
-  const getScoreColor = (score) => {
+  const getScoreColor = (score: number) => {
     if (score >= 85) return 'text-green-500';
     if (score >= 75) return 'text-blue-500';
     if (score >= 65) return 'text-yellow-500';
     return 'text-orange-500';
   };
 
-  const getScoreLabel = (score) => {
+  const getScoreLabel = (score: number) => {
     if (score >= 85) return 'Excellent';
     if (score >= 75) return 'Good';
     if (score >= 65) return 'Average';
     return 'Needs Work';
   };
 
-  const getScoreBg = (score) => {
+  const getScoreBg = (score: number) => {
     if (score >= 85) return 'from-green-900/50 to-emerald-900/50';
     if (score >= 75) return 'from-blue-900/50 to-cyan-900/50';
     if (score >= 65) return 'from-yellow-900/50 to-amber-900/50';
     return 'from-orange-900/50 to-red-900/50';
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* HEADER */}
       <div className="bg-black/20 backdrop-blur border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -496,11 +476,224 @@ const UltimateATSAnalyzer = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Rest of the component continues exactly the same as document... */}
-        {/* Due to length limits, use the exact same JSX from lines 566 onwards in the document */}
-      </div>
-    </div>
-  );
-};
+        {!results ? (
+          <div className="space-y-6">
+            <div 
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              className="border-2 border-dashed border-purple-400/30 rounded-xl p-12 text-center bg-black/20 backdrop-blur hover:border-purple-400/50 transition-colors"
+            >
+              <Upload className="w-16 h-16 mx-auto text-purple-400 mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Upload or Paste Your Resume</h3>
+              <p className="text-purple-300 mb-6">Supports .txt files or paste text directly</p>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".txt"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+              >
+                Choose File
+              </button>
+              
+              <div className="mt-6">
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Or paste your resume text here..."
+                  className="w-full h-40 bg-black/40 border border-purple-400/30 rounded-lg p-4 text-white placeholder-purple-300/50 focus:outline-none focus:border-purple-400"
+                />
+              </div>
+              
+              <button
+                onClick={() => analyzeResume(text)}
+                disabled={!text.trim() || analyzing}
+                className="mt-4 px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {analyzing ? 'Analyzing...' : 'Analyze Resume'}
+              </button>
+            </div>
 
-export default UltimateATSAnalyzer;
+            {showHistory && userHistory.length > 0 && (
+              <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+                <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Your Analysis History
+                </h3>
+                <div className="space-y-2">
+                  {userHistory.map((entry) => (
+                    <div key={entry.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                      <div className="text-sm text-purple-300">
+                        {new Date(entry.date).toLocaleDateString()}
+                      </div>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-white">Score: <span className={getScoreColor(entry.score)}>{entry.score}</span></span>
+                        <span className="text-purple-300">{entry.keywords} keywords</span>
+                        <span className="text-purple-300">{entry.wordCount} words</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className={`bg-gradient-to-br ${getScoreBg(results.score)} border border-white/10 rounded-xl p-8`}>
+              <div className="text-center">
+                <div className="text-6xl font-bold mb-2">
+                  <span className={getScoreColor(results.score)}>{results.score}</span>
+                  <span className="text-white/50">/100</span>
+                </div>
+                <div className="text-2xl text-white font-semibold mb-2">{getScoreLabel(results.score)}</div>
+                <div className="text-purple-300">ResumeTech Score™ • {results.percentile}</div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  Strengths ({results.strengths.length})
+                </h3>
+                <ul className="space-y-2">
+                  {results.strengths.map((s, i) => (
+                    <li key={i} className="text-green-300 flex items-start gap-2">
+                      <span className="text-green-400 mt-1">✓</span>
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-yellow-400" />
+                  Improvements ({results.missingKeywords.length})
+                </h3>
+                <ul className="space-y-2">
+                  {results.missingKeywords.map((k, i) => (
+                    <li key={i} className="text-yellow-300 flex items-start gap-2">
+                      <span className="text-yellow-400 mt-1">!</span>
+                      {k}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {jobMatches && (
+              <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  {successPredictor && (
+          <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-400" />
+              Success Prediction • {successPredictor.confidenceLevel} Confidence
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white/5 rounded-lg p-4">
+                <div className="text-3xl font-bold text-green-400">{successPredictor.interviewProbability}%</div>
+                <div className="text-sm text-purple-300">Interview Callback Rate</div>
+                <div className="text-xs text-purple-400 mt-1">Avg. Response: {successPredictor.avgResponseTime}</div>
+              </div>
+              <div className="bg-white/5 rounded-lg p-4">
+                <div className="text-sm text-purple-300 mb-2">Your Strengths:</div>
+                <ul className="text-xs space-y-1">
+                  {successPredictor.strengthAreas.map((area: string, i: number) => (
+                    <li key={i} className="text-green-300">✓ {area}</li>
+                  ))}
+                  {successPredictor.strengthAreas.length === 0 && (
+                    <li className="text-purple-400">Build your strengths first</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-4">
+          <button
+            onClick={enhanceWithAI}
+            disabled={aiMode}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+          >
+            <Sparkles className="w-5 h-5" />
+            {aiMode ? 'Generating Insights...' : 'Get AI Improvements'}
+          </button>
+          
+          <button
+            onClick={() => {
+              setResults(null);
+              setText('');
+              setFile(null);
+              setEnhanced(null);
+            }}
+            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+          >
+            <RefreshCw className="w-5 h-5" />
+            New Analysis
+          </button>
+        </div>
+
+        {enhanced && enhanced.length > 0 && (
+          <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border border-purple-400/30 rounded-xl p-6">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <Brain className="w-6 h-6 text-purple-400" />
+              AI-Powered Improvement Roadmap
+            </h3>
+            <div className="space-y-4">
+              {enhanced.map((suggestion, i) => (
+                <div key={i} className="bg-black/30 rounded-lg p-4 border border-purple-400/20">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 className="text-lg font-semibold text-white">{suggestion.area}</h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs font-semibold">
+                          {suggestion.impact}
+                        </span>
+                        <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+                          {suggestion.confidence} confidence
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => copyToClipboard(suggestion.improved)}
+                      className="p-2 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-colors"
+                    >
+                      <Copy className="w-4 h-4 text-purple-300" />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div>
+                      <div className="text-xs text-purple-400 font-semibold mb-1">Current:</div>
+                      <div className="text-sm text-red-300">{suggestion.current}</div>
+                    </div>
+                    
+                    <div>
+                      <div className="text-xs text-purple-400 font-semibold mb-1">Improved:</div>
+                      <div className="text-sm text-green-300 bg-black/20 p-2 rounded">{suggestion.improved}</div>
+                    </div>
+                    
+                    <div className="pt-2 border-t border-purple-400/20">
+                      <div className="text-xs text-purple-400 font-semibold mb-1">Why this matters:</div>
+                      <div className="text-xs text-purple-200">{suggestion.why}</div>
+                      <div className="text-xs text-purple-400 mt-1">Based on: {suggestion.basedOn}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</div>
