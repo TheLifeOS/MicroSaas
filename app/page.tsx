@@ -591,109 +591,145 @@ const UltimateATSAnalyzer = () => {
             {jobMatches && (
               <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  {successPredictor && (
-          <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              Success Prediction • {successPredictor.confidenceLevel} Confidence
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-white/5 rounded-lg p-4">
-                <div className="text-3xl font-bold text-green-400">{successPredictor.interviewProbability}%</div>
-                <div className="text-sm text-purple-300">Interview Callback Rate</div>
-                <div className="text-xs text-purple-400 mt-1">Avg. Response: {successPredictor.avgResponseTime}</div>
-              </div>
-              <div className="bg-white/5 rounded-lg p-4">
-                <div className="text-sm text-purple-300 mb-2">Your Strengths:</div>
-                <ul className="text-xs space-y-1">
-                  {successPredictor.strengthAreas.map((area: string, i: number) => (
-                    <li key={i} className="text-green-300">✓ {area}</li>
-                  ))}
-                  {successPredictor.strengthAreas.length === 0 && (
-                    <li className="text-purple-400">Build your strengths first</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="flex gap-4">
-          <button
-            onClick={enhanceWithAI}
-            disabled={aiMode}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-          >
-            <Sparkles className="w-5 h-5" />
-            {aiMode ? 'Generating Insights...' : 'Get AI Improvements'}
-          </button>
-          
-          <button
-            onClick={() => {
-              setResults(null);
-              setText('');
-              setFile(null);
-              setEnhanced(null);
-            }}
-            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
-          >
-            <RefreshCw className="w-5 h-5" />
-            New Analysis
-          </button>
-        </div>
-
-        {enhanced && enhanced.length > 0 && (
-          <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border border-purple-400/30 rounded-xl p-6">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <Brain className="w-6 h-6 text-purple-400" />
-              AI-Powered Improvement Roadmap
-            </h3>
-            <div className="space-y-4">
-              {enhanced.map((suggestion, i) => (
-                <div key={i} className="bg-black/30 rounded-lg p-4 border border-purple-400/20">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="text-lg font-semibold text-white">{suggestion.area}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs font-semibold">
-                          {suggestion.impact}
-                        </span>
-                        <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
-                          {suggestion.confidence} confidence
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => copyToClipboard(suggestion.improved)}
-                      className="p-2 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-colors"
-                    >
-                      <Copy className="w-4 h-4 text-purple-300" />
-                    </button>
+                  <Briefcase className="w-5 h-5 text-blue-400" />
+                  Job Market Match • {jobMatches.matchQuality}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-blue-400">{jobMatches.totalOpenings.toLocaleString()}</div>
+                    <div className="text-sm text-purple-300">Open Positions</div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <div>
-                      <div className="text-xs text-purple-400 font-semibold mb-1">Current:</div>
-                      <div className="text-sm text-red-300">{suggestion.current}</div>
-                    </div>
-                    
-                    <div>
-                      <div className="text-xs text-purple-400 font-semibold mb-1">Improved:</div>
-                      <div className="text-sm text-green-300 bg-black/20 p-2 rounded">{suggestion.improved}</div>
-                    </div>
-                    
-                    <div className="pt-2 border-t border-purple-400/20">
-                      <div className="text-xs text-purple-400 font-semibold mb-1">Why this matters:</div>
-                      <div className="text-xs text-purple-200">{suggestion.why}</div>
-                      <div className="text-xs text-purple-400 mt-1">Based on: {suggestion.basedOn}</div>
-                    </div>
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-green-400">${(jobMatches.estimatedSalary / 1000).toFixed(0)}K</div>
+                    <div className="text-sm text-purple-300">Est. Salary Range</div>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="text-2xl font-bold text-purple-400">{jobMatches.matchedSkills}</div>
+                    <div className="text-sm text-purple-300">Matched Skills</div>
                   </div>
                 </div>
-              ))}
+                {jobMatches.topCompanies.length > 0 && (
+                  <div className="mt-4">
+                    <div className="text-sm text-purple-300 mb-2">Top Hiring Companies:</div>
+                    <div className="flex flex-wrap gap-2">
+                      {jobMatches.topCompanies.map((company: string, i: number) => (
+                        <span key={i} className="px-3 py-1 bg-purple-600/30 text-purple-200 rounded-full text-sm">
+                          {company}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {successPredictor && (
+              <div className="bg-black/20 backdrop-blur border border-white/10 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-green-400" />
+                  Success Prediction • {successPredictor.confidenceLevel} Confidence
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="text-3xl font-bold text-green-400">{successPredictor.interviewProbability}%</div>
+                    <div className="text-sm text-purple-300">Interview Callback Rate</div>
+                    <div className="text-xs text-purple-400 mt-1">Avg. Response: {successPredictor.avgResponseTime}</div>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="text-sm text-purple-300 mb-2">Your Strengths:</div>
+                    <ul className="text-xs space-y-1">
+                      {successPredictor.strengthAreas.map((area: string, i: number) => (
+                        <li key={i} className="text-green-300">✓ {area}</li>
+                      ))}
+                      {successPredictor.strengthAreas.length === 0 && (
+                        <li className="text-purple-400">Build your strengths first</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-4">
+              <button
+                onClick={enhanceWithAI}
+                disabled={aiMode}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-semibold disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-5 h-5" />
+                {aiMode ? 'Generating Insights...' : 'Get AI Improvements'}
+              </button>
+              
+              <button
+                onClick={() => {
+                  setResults(null);
+                  setText('');
+                  setFile(null);
+                  setEnhanced(null);
+                }}
+                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+              >
+                <RefreshCw className="w-5 h-5" />
+                New Analysis
+              </button>
             </div>
+
+            {enhanced && enhanced.length > 0 && (
+              <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border border-purple-400/30 rounded-xl p-6">
+                <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <Brain className="w-6 h-6 text-purple-400" />
+                  AI-Powered Improvement Roadmap
+                </h3>
+                <div className="space-y-4">
+                  {enhanced.map((suggestion, i) => (
+                    <div key={i} className="bg-black/30 rounded-lg p-4 border border-purple-400/20">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="text-lg font-semibold text-white">{suggestion.area}</h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs font-semibold">
+                              {suggestion.impact}
+                            </span>
+                            <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+                              {suggestion.confidence} confidence
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard(suggestion.improved)}
+                          className="p-2 bg-purple-600/30 hover:bg-purple-600/50 rounded-lg transition-colors"
+                        >
+                          <Copy className="w-4 h-4 text-purple-300" />
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div>
+                          <div className="text-xs text-purple-400 font-semibold mb-1">Current:</div>
+                          <div className="text-sm text-red-300">{suggestion.current}</div>
+                        </div>
+                        
+                        <div>
+                          <div className="text-xs text-purple-400 font-semibold mb-1">Improved:</div>
+                          <div className="text-sm text-green-300 bg-black/20 p-2 rounded">{suggestion.improved}</div>
+                        </div>
+                        
+                        <div className="pt-2 border-t border-purple-400/20">
+                          <div className="text-xs text-purple-400 font-semibold mb-1">Why this matters:</div>
+                          <div className="text-xs text-purple-200">{suggestion.why}</div>
+                          <div className="text-xs text-purple-400 mt-1">Based on: {suggestion.basedOn}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
-    )}
-  </div>
-</div>
+    </div>
+  );
+};
+
+export default UltimateATSAnalyzer;
