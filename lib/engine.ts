@@ -15,13 +15,9 @@ export const ENGINE_2026_RULES = {
   ]
 };
 
-/**
- * High-Performance Client-Side ATS Parser
- */
 export function runNeuralScan(text: string) {
   const content = text.toLowerCase();
   
-  // Logic: Weighted Semantic Scoring
   const matchedKeywords = ENGINE_2026_RULES.criticalKeywords.filter(k => 
     content.includes(k.toLowerCase())
   );
@@ -32,7 +28,7 @@ export function runNeuralScan(text: string) {
 
   const keywordScore = (matchedKeywords.length / ENGINE_2026_RULES.criticalKeywords.length) * 50;
   const verbScore = (foundVerbs.length / ENGINE_2026_RULES.actionVerbs.length) * 30;
-  const readabilityScore = text.length > 1000 ? 20 : 10;
+  const readabilityScore = text.length > 500 ? 20 : 10;
 
   return {
     score: Math.min(100, Math.round(keywordScore + verbScore + readabilityScore)),
