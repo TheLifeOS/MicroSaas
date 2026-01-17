@@ -64,7 +64,7 @@ export default function ResumeATSOptimizer() {
     reader.readAsText(uploadedFile);
   };
 
-  const analyzeResume = (resumeContent, jobDesc) => {
+  const analyzeResume = (resumeContent: string, jobDesc: string) => {
     setAnalyzing(true);
 
     // Simulate AI analysis
